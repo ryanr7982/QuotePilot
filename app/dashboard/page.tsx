@@ -2,11 +2,11 @@
 'use client'
 
 import { supabase } from 'supabaseClient'
-import CreateQuoteModal from '@/components/CreateQuoteModal'
-import CreateClientModal from '@/components/CreateClientModal'
-import EditQuoteModal from '@/components/EditQuoteModal'
-import DeleteQuoteModal from '@/components/DeleteQuoteModal'
-import QuoteCard from '@/components/QuoteCard'
+import CreateQuoteModal from 'components/CreateQuoteModal'
+import CreateClientModal from 'components/CreateClientModal'
+import EditQuoteModal from 'components/EditQuoteModal'
+import DeleteQuoteModal from 'components/DeleteQuoteModal'
+import QuoteCard from 'components/QuoteCard'
 import type { Quote, Client } from 'types'
 
 

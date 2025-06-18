@@ -2,7 +2,7 @@
 'use client'
 
 import { Dialog } from '@headlessui/react'
-import { supabase } from '@/lib/supabaseClient'
+import { supabase } from 'supabaseClient'
 import type { Quote } from 'types'
 
 type Props = {

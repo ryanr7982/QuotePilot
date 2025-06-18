@@ -3,7 +3,7 @@
 
 import { useState } from 'react'
 import { Dialog } from '@headlessui/react'
-import { supabase } from '@/lib/supabaseClient'
+import { supabase } from 'supabaseClient'
 import type { Quote, Client } from 'types'
 
 type Props = {
