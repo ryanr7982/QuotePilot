@@ -3,7 +3,8 @@
 
 import { useState } from 'react'
 import { Dialog } from '@headlessui/react'
-import { supabase } from 'supabaseClient'
+import { supabase } from '../supabaseClient'
+
 
 type Props = {
   isOpen: boolean

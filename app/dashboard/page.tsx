@@ -1,62 +1,72 @@
-'use client';
+'use client'
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 
-import { supabase } from '@/supabaseClient';
+import { supabase } from '@/supabaseClient'
 
-import CreateQuoteModal from '@/components/CreateQuoteModal';
-import CreateClientModal from '@/components/CreateClientModal';
-import EditQuoteModal from '@/components/EditQuoteModal';
-import DeleteQuoteModal from '@/components/DeleteQuoteModal';
-import QuoteCard from '@/components/QuoteCard';
+import CreateQuoteModal from '@/components/CreateQuoteModal'
+import CreateClientModal from '@/components/CreateClientModal'
+import EditQuoteModal from '@/components/EditQuoteModal'
+import DeleteQuoteModal from '@/components/DeleteQuoteModal'
+import QuoteCard from '@/components/QuoteCard'
 
-import type { Quote, Client } from '@/types';
+import type { Quote, Client } from '@/types'
 
 export default function DashboardPage() {
-  const [quotes, setQuotes] = useState<Quote[]>([]);
-  const [clients, setClients] = useState<Client[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [userId, setUserId] = useState<string | null>(null);
+  const [quotes, setQuotes] = useState<Quote[]>([])
+  const [clients, setClients] = useState<Client[]>([])
+  const [loading, setLoading] = useState(true)
+  const [userId, setUserId] = useState<string | null>(null)
 
-  const [createQuoteOpen, setCreateQuoteOpen] = useState(false);
-  const [editQuote, setEditQuote] = useState<Quote | null>(null);
-  const [deleteQuote, setDeleteQuote] = useState<Quote | null>(null);
-  const [createClientOpen, setCreateClientOpen] = useState(false);
+  const [createQuoteOpen, setCreateQuoteOpen] = useState(false)
+  const [editQuote, setEditQuote] = useState<Quote | null>(null)
+  const [deleteQuote, setDeleteQuote] = useState<Quote | null>(null)
+  const [createClientOpen, setCreateClientOpen] = useState(false)
 
-  const router = useRouter();
+  const router = useRouter()
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      const id = data?.user?.id || null;
-      if (!id) return router.push('/auth');
-      setUserId(id);
-      loadQuotes();
-      loadClients();
-    });
-  }, []);
+    const init = async () => {
+      const { data } = await supabase.auth.getUser()
+      const id = data?.user?.id || null
+
+      if (!id) {
+        router.push('/auth')
+        return
+      }
+
+      setUserId(id)
+      await loadQuotes()
+      await loadClients()
+    }
+
+    init()
+  }, [])
 
   const loadQuotes = async () => {
     const { data, error } = await supabase
       .from('quotes')
       .select('*')
-      .order('created_at', { ascending: false });
-    if (!error) setQuotes(data || []);
-    setLoading(false);
-  };
+      .order('created_at', { ascending: false })
+
+    if (!error) setQuotes(data || [])
+    setLoading(false)
+  }
 
   const loadClients = async () => {
     const { data } = await supabase
       .from('clients')
       .select('*')
-      .order('created_at', { ascending: false });
-    setClients(data || []);
-  };
+      .order('created_at', { ascending: false })
+
+    setClients(data || [])
+  }
 
   const onCreated = () => {
-    setCreateQuoteOpen(false);
-    loadQuotes();
-  };
+    setCreateQuoteOpen(false)
+    loadQuotes()
+  }
 
   return (
     <div className="p-6 max-w-5xl mx-auto">
@@ -123,7 +133,9 @@ export default function DashboardPage() {
         />
       )}
     </div>
-  );
+  )
 }
+
+
 
 
