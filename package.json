@@ -13,18 +13,24 @@
     "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/supabase-js": "^2.50.0",
     "file-saver": "^2.0.5",
+    "lucide-react": "^0.518.0",
     "micro": "^10.0.1",
     "next": "^15.3.4",
     "papaparse": "^5.5.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-hot-toast": "^2.5.2",
     "stripe": "^18.2.1"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.10",
     "@types/file-saver": "^2.0.7",
     "@types/papaparse": "^5.3.16",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.10",
     "typescript": "5.8.3"
   }
 }

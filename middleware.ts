@@ -1,17 +1,17 @@
 // middleware.ts
 import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs'
-import { NextResponse, type NextRequest } from 'next/server'
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
 
 export async function middleware(req: NextRequest) {
   const res = NextResponse.next()
   const supabase = createMiddlewareClient({ req, res })
 
   const {
-    data: { session },
-  } = await supabase.auth.getSession()
+    data: { user },
+  } = await supabase.auth.getUser()
 
-  // Redirect to /auth if not logged in and trying to access /dashboard
-  if (!session && req.nextUrl.pathname.startsWith('/dashboard')) {
+  if (!user) {
     return NextResponse.redirect(new URL('/auth', req.url))
   }
 
@@ -19,5 +19,6 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*'],
+  matcher: ['/dashboard', '/dashboard/(.*)'],
 }
+
