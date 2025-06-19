@@ -1,18 +1,12 @@
-import type { NextApiRequest, NextApiResponse } from 'next'
 import Stripe from 'stripe'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-05-28.basil',
+  apiVersion: '2023-10-16' as any,
 })
 
-
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' })
-  }
-
+export async function POST(req: Request) {
   try {
-    const { userId } = req.body // pass userId to link subscription to user later
+    const { userId } = await req.json()
 
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
@@ -23,18 +17,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           quantity: 1,
         },
       ],
-      // Success redirect URL after payment
-      success_url: `${req.headers.origin}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
-      // Cancel redirect URL if user cancels payment
-      cancel_url: `${req.headers.origin}/auth`,
+      success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/auth`,
       metadata: {
         userId,
       },
     })
 
-    res.status(200).json({ url: session.url })
-  } catch (err) {
-    console.error(err)
-    res.status(500).json({ error: 'Internal server error' })
+    return new Response(JSON.stringify({ url: session.url }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    })
+  } catch (error: any) {
+    console.error('Stripe checkout session error:', error)
+    return new Response(JSON.stringify({ error: 'Internal server error' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    })
   }
 }
+

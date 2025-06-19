@@ -1,16 +1,14 @@
-import { headers } from 'next/headers'
 import Stripe from 'stripe'
 import { supabase } from '@/supabaseClient'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-05-28.basil',
+  apiVersion: '2023-10-16' as any,
 })
-
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!
 
 export async function POST(req: Request) {
-  const body = await req.text() // raw body as required by Stripe
-  const sig = (await req.headers).get('stripe-signature')
+  const body = await req.text() // raw body for Stripe signature verification
+  const sig = req.headers.get('stripe-signature')
 
   if (!sig) {
     console.error('❌ Missing Stripe signature')
@@ -30,7 +28,7 @@ export async function POST(req: Request) {
   const userId = subscription.metadata?.userId
 
   if (!userId) {
-    console.warn('No user ID found in metadata')
+    console.warn('No user ID found in subscription metadata')
     return new Response('OK', { status: 200 })
   }
 
