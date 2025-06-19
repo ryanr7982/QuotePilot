@@ -10,6 +10,7 @@ import CreateClientModal from '@/components/CreateClientModal'
 import EditQuoteModal from '@/components/EditQuoteModal'
 import DeleteQuoteModal from '@/components/DeleteQuoteModal'
 import QuoteCard from '@/components/QuoteCard'
+import { exportQuotesToCSV } from '@/lib/exportCSV'
 
 import type { Quote, Client } from '@/types'
 
@@ -43,7 +44,20 @@ export default function DashboardPage() {
 
     init()
   }, [])
-
+async function handleSubscribe() {
+  const userId = 'current-user-id' // get logged-in user ID from Supabase auth
+  const res = await fetch('/api/create-checkout-session', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ userId }),
+  })
+  const data = await res.json()
+  if (data.url) {
+    window.location.href = data.url // redirect to Stripe checkout
+  } else {
+    alert('Failed to create checkout session')
+  }
+}
   const loadQuotes = async () => {
     const { data, error } = await supabase
       .from('quotes')
@@ -86,6 +100,27 @@ export default function DashboardPage() {
             + Quote
           </button>
         </div>
+        <div className="flex gap-3">
+  <button
+    onClick={() => exportQuotesToCSV(quotes, clients)}
+    className="px-4 py-2 rounded bg-green-600 text-white"
+  >
+    Export CSV
+  </button>
+  <button
+    onClick={() => setCreateClientOpen(true)}
+    className="px-4 py-2 rounded bg-gray-700 text-white"
+  >
+    + Client
+  </button>
+  <button
+    onClick={() => setCreateQuoteOpen(true)}
+    className="px-4 py-2 rounded bg-blue-600 text-white"
+  >
+    + Quote
+  </button>
+</div>
+
       </div>
 
       {loading ? (
