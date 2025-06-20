@@ -20,8 +20,12 @@ module.exports = {
         fadeInUp: 'fadeInUp 1s ease forwards',
         fadeIn: 'fadeIn 0.7s ease forwards',
       },
+      fontFamily: {
+        sans: ['Inter', 'ui-sans-serif', 'system-ui'],
+      },
     },
   },
   plugins: [],
 }
+
 
