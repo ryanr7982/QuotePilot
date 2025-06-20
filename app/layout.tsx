@@ -16,7 +16,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
       <body className={`${inter.className} bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-white`}>
-        <Navbar />
+        
         <ThemeToggle />
         <Toaster position="top-right" toastOptions={{ duration: 3000 }} />
         {children}
