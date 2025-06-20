@@ -11,35 +11,38 @@ export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true)
   const router = useRouter()
 
-  const handleAuth = async () => {
-    setLoading(true)
-    if (isLogin) {
-      // Login mode
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      })
-      if (error) {
-        alert(error.message)
-      } else {
-        alert('Login successful!')
-        router.push('/dashboard') // Redirect to dashboard or desired page
-      }
+const handleAuth = async () => {
+  setLoading(true)
+
+  if (isLogin) {
+    // Login mode
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    })
+    if (error) {
+      toast.error(error.message)
     } else {
-      // Signup mode
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-      })
-      if (error) {
-        alert(error.message)
-      } else {
-        alert('Signup successful! Please check your email to confirm your account.')
-        setIsLogin(true) // Switch to login after signup
-      }
+      toast.success('Login successful!')
+      router.push('/dashboard') // ✅ Redirect
     }
-    setLoading(false)
+  } else {
+    // Signup mode
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+    })
+    if (error) {
+      toast.error(error.message)
+    } else {
+      toast.success('Signup successful! Check your email to confirm.')
+      setIsLogin(true) // Switch to login
+    }
   }
+
+  setLoading(false)
+}
+
 
   return (
     <div className="h-screen flex items-center justify-center">
