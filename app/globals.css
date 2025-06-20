@@ -2,12 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Body styles */
+/* Global styles */
 body {
-  margin: 0;
-  font-family: system-ui, sans-serif;
-  background-color: #fff;
-  color: #000;
+  @apply font-sans bg-white text-black dark:bg-gray-950 dark:text-white m-0;
 }
 
 /* Keyframes */
@@ -38,13 +35,12 @@ body {
   }
 }
 
-/* Classes */
+/* Utility classes */
 .animated-pattern {
   position: absolute;
   inset: 0;
   pointer-events: none;
   z-index: 0;
-
   background-image:
     radial-gradient(rgba(255 255 255 / 0.05) 1px, transparent 1px),
     radial-gradient(rgba(255 255 255 / 0.05) 1px, transparent 1px);
@@ -55,17 +51,13 @@ body {
 
 .animate-fadeIn {
   opacity: 0;
-  animation-name: fadeIn;
-  animation-fill-mode: forwards;
-  animation-timing-function: ease-out;
-  animation-duration: 0.8s;
+  animation: fadeIn 0.8s ease-out forwards;
 }
 
 .animate-fadeInUp {
-  animation-name: fadeInUp;
-  animation-duration: 1s;
-  animation-fill-mode: forwards;
-  animation-timing-function: ease-out;
+  opacity: 0;
+  animation: fadeInUp 1s ease-out forwards;
 }
+
 
 

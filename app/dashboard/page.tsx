@@ -11,6 +11,7 @@ import QuoteCard from '@/components/QuoteCard'
 import { exportQuotesToCSV } from '@/lib/exportCSV'
 import type { Quote, Client } from '@/types'
 import { toast } from 'react-hot-toast'
+import LayoutWrapper from '@/components/LayoutWrapper'
 
 const PAGE_SIZE = 10
 
@@ -37,7 +38,6 @@ export default function DashboardPage() {
     }
   }, [])
 
-  // Load userId and clients only once
   useEffect(() => {
     const init = async () => {
       const { data } = await supabase.auth.getUser()
@@ -52,22 +52,16 @@ export default function DashboardPage() {
     init()
   }, [])
 
-  // Load quotes whenever page, filters, or search change, or userId changes
   useEffect(() => {
     if (!userId) return
     loadQuotes(page, searchTerm, selectedClient)
   }, [page, searchTerm, selectedClient, userId])
 
-  // Reset page to 1 when searchTerm or selectedClient changes
   useEffect(() => {
     setPage(1)
   }, [searchTerm, selectedClient])
 
-  const loadQuotes = async (
-    page: number,
-    search: string,
-    clientId: string
-  ) => {
+  const loadQuotes = async (page: number, search: string, clientId: string) => {
     setLoading(true)
 
     let query = supabase
@@ -75,16 +69,12 @@ export default function DashboardPage() {
       .select('*', { count: 'exact' })
       .order('created_at', { ascending: false })
 
-    // Apply client filter
     if (clientId) {
       query = query.eq('client_id', clientId)
     }
 
-    // Apply search filter on title or line_items descriptions (ilike for case-insensitive)
     if (search) {
       const searchLower = search.toLowerCase()
-      // Supabase doesn't support OR with ilike on JSONB, so we do a simpler ilike on title only.
-      // For more complex search, you'd need to do full text search or filtering client-side.
       query = query.ilike('title', `%${searchLower}%`)
     }
 
@@ -114,133 +104,136 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="p-6 max-w-5xl mx-auto">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Quotes</h1>
-        <div className="flex gap-3">
-          <button
-            onClick={() => setCreateClientOpen(true)}
-            className="px-4 py-2 rounded bg-gray-700 text-white"
+    <LayoutWrapper>
+      <div className="p-6 max-w-5xl mx-auto">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-3xl font-bold">Quotes</h1>
+          <div className="flex gap-3">
+            <button
+              onClick={() => setCreateClientOpen(true)}
+              className="px-4 py-2 rounded bg-gray-700 text-white"
+            >
+              + Client
+            </button>
+            <button
+              onClick={() => setCreateQuoteOpen(true)}
+              className="px-4 py-2 rounded bg-blue-600 text-white"
+            >
+              + Quote
+            </button>
+          </div>
+        </div>
+
+        <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          <input
+            type="text"
+            placeholder="Search quotes by title..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="p-2 border rounded w-full"
+          />
+          <select
+            value={selectedClient}
+            onChange={(e) => setSelectedClient(e.target.value)}
+            className="p-2 border rounded w-full"
           >
-            + Client
-          </button>
+            <option value="">Filter by client</option>
+            {clients.map((client) => (
+              <option key={client.id} value={client.id}>
+                {client.name}
+              </option>
+            ))}
+          </select>
           <button
-            onClick={() => setCreateQuoteOpen(true)}
-            className="px-4 py-2 rounded bg-blue-600 text-white"
+            onClick={() => {
+              setSearchTerm('')
+              setSelectedClient('')
+            }}
+            className="p-2 rounded bg-gray-300 hover:bg-gray-400"
           >
-            + Quote
+            Clear Filters
           </button>
         </div>
-      </div>
 
-      <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        <input
-          type="text"
-          placeholder="Search quotes by title..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="p-2 border rounded w-full"
-        />
-        <select
-          value={selectedClient}
-          onChange={(e) => setSelectedClient(e.target.value)}
-          className="p-2 border rounded w-full"
-        >
-          <option value="">Filter by client</option>
-          {clients.map((client) => (
-            <option key={client.id} value={client.id}>
-              {client.name}
-            </option>
-          ))}
-        </select>
-        <button
-          onClick={() => {
-            setSearchTerm('')
-            setSelectedClient('')
-          }}
-          className="p-2 rounded bg-gray-300 hover:bg-gray-400"
-        >
-          Clear Filters
-        </button>
-      </div>
+        <div className="flex justify-end mb-6">
+          <button
+            onClick={() => exportQuotesToCSV(quotes, clients)}
+            className="px-4 py-2 rounded bg-green-600 text-white"
+          >
+            Export CSV
+          </button>
+        </div>
 
-      <div className="flex justify-end mb-6">
-        <button
-          onClick={() => exportQuotesToCSV(quotes, clients)}
-          className="px-4 py-2 rounded bg-green-600 text-white"
-        >
-          Export CSV
-        </button>
-      </div>
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {quotes.map((quote) => (
+                <QuoteCard
+                  key={quote.id}
+                  quote={quote}
+                  onEdit={() => setEditQuote(quote)}
+                  onDelete={() => setDeleteQuote(quote)}
+                  clients={clients}
+                />
+              ))}
+            </div>
 
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {quotes.map((quote) => (
-              <QuoteCard
-                key={quote.id}
-                quote={quote}
-                onEdit={() => setEditQuote(quote)}
-                onDelete={() => setDeleteQuote(quote)}
-                clients={clients}
-              />
-            ))}
-          </div>
+            <div className="flex justify-center mt-6 space-x-4">
+              <button
+                onClick={() => setPage((p) => Math.max(p - 1, 1))}
+                disabled={page <= 1}
+                className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
+              >
+                Previous
+              </button>
+              <span className="self-center">
+                Page {page} of {Math.ceil(totalCount / PAGE_SIZE) || 1}
+              </span>
+              <button
+                onClick={() =>
+                  setPage((p) => Math.min(p + 1, Math.ceil(totalCount / PAGE_SIZE)))
+                }
+                disabled={page >= Math.ceil(totalCount / PAGE_SIZE)}
+                className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
+              >
+                Next
+              </button>
+            </div>
+          </>
+        )}
 
-          {/* Pagination */}
-          <div className="flex justify-center mt-6 space-x-4">
-            <button
-              onClick={() => setPage((p) => Math.max(p - 1, 1))}
-              disabled={page <= 1}
-              className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
-            >
-              Previous
-            </button>
-            <span className="self-center">
-              Page {page} of {Math.ceil(totalCount / PAGE_SIZE) || 1}
-            </span>
-            <button
-              onClick={() => setPage((p) => Math.min(p + 1, Math.ceil(totalCount / PAGE_SIZE)))}
-              disabled={page >= Math.ceil(totalCount / PAGE_SIZE)}
-              className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
-            >
-              Next
-            </button>
-          </div>
-        </>
-      )}
-
-      <CreateQuoteModal
-        isOpen={createQuoteOpen}
-        onClose={() => setCreateQuoteOpen(false)}
-        onCreated={onCreated}
-        userId={userId}
-        clients={clients}
-      />
-      <CreateClientModal
-        isOpen={createClientOpen}
-        onClose={() => setCreateClientOpen(false)}
-        onClientCreated={loadClients}
-        userId={userId}
-      />
-      {editQuote && (
-        <EditQuoteModal
-          quote={editQuote}
-          onClose={() => setEditQuote(null)}
-          onUpdated={() => loadQuotes(page, searchTerm, selectedClient)}
+        <CreateQuoteModal
+          isOpen={createQuoteOpen}
+          onClose={() => setCreateQuoteOpen(false)}
+          onCreated={onCreated}
+          userId={userId}
           clients={clients}
         />
-      )}
-      {deleteQuote && (
-        <DeleteQuoteModal
-          quote={deleteQuote}
-          onClose={() => setDeleteQuote(null)}
-          onDeleted={() => loadQuotes(page, searchTerm, selectedClient)}
+        <CreateClientModal
+          isOpen={createClientOpen}
+          onClose={() => setCreateClientOpen(false)}
+          onClientCreated={loadClients}
+          userId={userId}
         />
-      )}
-    </div>
+        {editQuote && (
+          <EditQuoteModal
+            quote={editQuote}
+            onClose={() => setEditQuote(null)}
+            onUpdated={() => loadQuotes(page, searchTerm, selectedClient)}
+            clients={clients}
+          />
+        )}
+        {deleteQuote && (
+          <DeleteQuoteModal
+            quote={deleteQuote}
+            onClose={() => setDeleteQuote(null)}
+            onDeleted={() => loadQuotes(page, searchTerm, selectedClient)}
+          />
+        )}
+      </div>
+    </LayoutWrapper>
   )
 }
 

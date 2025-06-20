@@ -4,6 +4,8 @@ import { ReactNode } from 'react'
 import { Toaster } from 'react-hot-toast'
 import ThemeToggle from '@/components/ThemeToggle'
 import Navbar from '@/components/Navbar'
+import { Inter } from 'next/font/google'
+const inter = Inter({ subsets: ['latin'] })
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
