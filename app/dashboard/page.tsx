@@ -61,6 +61,39 @@ export default function DashboardPage() {
     setPage(1)
   }, [searchTerm, selectedClient])
 
+  const handleUpgrade = async () => {
+    try {
+      const { data: userData } = await supabase.auth.getUser()
+      const user = userData?.user
+
+      if (!user) {
+        toast.error('You must be logged in')
+        router.push('/auth')
+        return
+      }
+
+      const res = await fetch('/api/create-checkout-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: user.id,
+          email: user.email,
+        }),
+      })
+
+      const data = await res.json()
+
+      if (data?.url) {
+        window.location.href = data.url
+      } else {
+        toast.error('Failed to create checkout session')
+      }
+    } catch (err) {
+      console.error(err)
+      toast.error('Something went wrong')
+    }
+  }
+
   const loadQuotes = async (page: number, search: string, clientId: string) => {
     setLoading(true)
 
@@ -89,6 +122,7 @@ export default function DashboardPage() {
     } else {
       console.error('Error loading quotes:', error)
     }
+
     setLoading(false)
   }
 
@@ -109,6 +143,12 @@ export default function DashboardPage() {
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold">Quotes</h1>
           <div className="flex gap-3">
+            <button
+              onClick={handleUpgrade}
+              className="px-4 py-2 bg-yellow-400 text-black font-semibold rounded hover:bg-yellow-300 transition"
+            >
+              Upgrade to Pro
+            </button>
             <button
               onClick={() => setCreateClientOpen(true)}
               className="px-4 py-2 rounded bg-gray-700 text-white"
@@ -236,10 +276,3 @@ export default function DashboardPage() {
     </LayoutWrapper>
   )
 }
-
-
-
-
-
-
-
