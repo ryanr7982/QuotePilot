@@ -2,10 +2,70 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Body styles */
 body {
   margin: 0;
   font-family: system-ui, sans-serif;
   background-color: #fff;
   color: #000;
 }
+
+/* Keyframes */
+@keyframes movePattern {
+  0% {
+    background-position: 0 0, 0 0;
+  }
+  100% {
+    background-position: 100px 100px, -100px -100px;
+  }
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Classes */
+.animated-pattern {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+
+  background-image:
+    radial-gradient(rgba(255 255 255 / 0.05) 1px, transparent 1px),
+    radial-gradient(rgba(255 255 255 / 0.05) 1px, transparent 1px);
+  background-size: 40px 40px, 40px 40px;
+  background-position: 0 0, 20px 20px;
+  animation: movePattern 60s linear infinite;
+}
+
+.animate-fadeIn {
+  opacity: 0;
+  animation-name: fadeIn;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease-out;
+  animation-duration: 0.8s;
+}
+
+.animate-fadeInUp {
+  animation-name: fadeInUp;
+  animation-duration: 1s;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease-out;
+}
+
 
