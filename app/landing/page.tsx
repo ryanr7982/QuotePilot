@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import LayoutWrapper from '@/components/LayoutWrapper'
+
 export default function LandingPage() {
   return (
     <>
@@ -76,4 +76,5 @@ export default function LandingPage() {
     </>
   )
 }
+
 
