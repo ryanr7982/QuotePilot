@@ -1,7 +1,6 @@
 'use client'
 
 import { FaHome, FaSignInAlt, FaTachometerAlt } from 'react-icons/fa'
-import QuotePreview from '@/components/QuotePreview' // Adjust path if needed
 
 export default function HomePage() {
   return (
@@ -33,39 +32,23 @@ export default function HomePage() {
         <a
           href="/"
           className="flex items-center gap-2 px-6 py-3 bg-yellow-400 text-gray-900 font-semibold rounded-lg shadow-lg hover:bg-yellow-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-yellow-300 transition transform hover:-translate-y-1 hover:scale-105"
-          tabIndex={0}
         >
           <FaHome size={20} /> Home
         </a>
         <a
           href="/auth"
           className="flex items-center gap-2 px-6 py-3 bg-white bg-opacity-20 rounded-lg font-semibold transition transform hover:-translate-y-1 hover:scale-105 hover:bg-opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
-          tabIndex={0}
         >
           <FaSignInAlt size={20} /> Login / Signup
         </a>
         <a
           href="/dashboard"
           className="flex items-center gap-2 px-6 py-3 bg-white bg-opacity-20 rounded-lg font-semibold transition transform hover:-translate-y-1 hover:scale-105 hover:bg-opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
-          tabIndex={0}
         >
           <FaTachometerAlt size={20} /> Dashboard
         </a>
       </nav>
-
-      <section
-        className="w-full max-w-3xl bg-black bg-opacity-40 backdrop-blur-sm rounded-xl p-8 shadow-lg opacity-0 animate-fadeIn"
-        style={{ animationDelay: '0.6s' }}
-      >
-        <QuotePreview />
-      </section>
     </main>
   )
 }
-
-
-
-
-
-
 
