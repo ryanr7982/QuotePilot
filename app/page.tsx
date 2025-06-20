@@ -1,6 +1,7 @@
 'use client'
 
 import { FaHome, FaSignInAlt, FaTachometerAlt } from 'react-icons/fa'
+import QuotePreview from '@/components/QuotePreview' // Adjust if path differs
 
 export default function HomePage() {
   return (
@@ -18,7 +19,10 @@ export default function HomePage() {
         Your all-in-one quote and proposal management SaaS tool.
       </p>
 
-      <nav className="flex flex-wrap justify-center gap-6 opacity-0 animate-fadeIn" style={{ animationDelay: '0.3s' }}>
+      <nav
+        className="flex flex-wrap justify-center gap-6 mb-12 opacity-0 animate-fadeIn"
+        style={{ animationDelay: '0.3s' }}
+      >
         <a
           href="/"
           className="flex items-center gap-2 px-6 py-3 bg-yellow-400 text-gray-900 font-semibold rounded-lg shadow-lg hover:bg-yellow-300 transition transform hover:-translate-y-1"
@@ -38,9 +42,13 @@ export default function HomePage() {
           <FaTachometerAlt size={20} /> Dashboard
         </a>
       </nav>
+
+      <QuotePreview />
     </main>
   )
 }
+
+
 
 
 

@@ -8,6 +8,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <head />
+      sans: ['Inter', 'ui-sans-serif', 'system-ui'],
       <body className="bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-white">
         {children}
          <Navbar />

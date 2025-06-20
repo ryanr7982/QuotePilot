@@ -13,6 +13,7 @@
     "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/supabase-js": "^2.50.0",
     "file-saver": "^2.0.5",
+    "framer-motion": "^12.18.1",
     "lucide-react": "^0.518.0",
     "micro": "^10.0.1",
     "next": "^15.3.4",
